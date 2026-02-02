@@ -1,60 +1,53 @@
-const express=require("express");
-const router=express.Router();
+const express = require("express");
+const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync.js");
 
 const Listing = require("../models/listing.js");
 const { isloggedIn, isOwner, validateListing } = require("../middleware.js");
 
-const listingController=require("../constrollers/listings.js");
-const multer  = require('multer')
-const { storage } = require("../cloudConfig.js");
-const upload = multer({storage}); 
+const listingController = require("../constrollers/listings.js");
 
-router.route("/")
-.get( wrapAsync(listingController.index))
-  .post(isloggedIn,
+const multer = require("multer");
+const { storage } = require("../cloudConfig.js");
+const upload = multer({ storage });
+
+// ===================== INDEX + CREATE =====================
+router
+  .route("/")
+  .get(wrapAsync(listingController.index))
+  .post(
+    isloggedIn,
+    upload.single("image"),        // ✅ FIXED (matches form)
     validateListing,
-    upload.single("listing[image]"),
-  wrapAsync(listingController.createlisting)
+    wrapAsync(listingController.createlisting)
   );
 
-// ).post( upload.single("listing[image]"), (req, res, next)=>{
-//   res.send(req.file);
-// });
-  
-//new route
-router.get("/new", isloggedIn,listingController.renderNewForm);
+// ===================== NEW =====================
+router.get("/new", isloggedIn, listingController.renderNewForm);
 
+// ===================== SHOW + UPDATE + DELETE =====================
+router
+  .route("/:id")
+  .get(wrapAsync(listingController.showListing))
+  .put(
+    isloggedIn,
+    isOwner,
+    upload.single("image"),        // ✅ FIXED
+    validateListing,
+    wrapAsync(listingController.updateListing)
+  )
+  .delete(
+    isloggedIn,
+    isOwner,
+    wrapAsync(listingController.destroylisting)
+  );
 
-router.route("/:id")
-.get( wrapAsync(listingController.showListing))
-.put(
-  
-  isloggedIn,
-  isOwner, 
-  upload.single("listing[image]"),
-  validateListing,
-  wrapAsync(listingController.updateListing)
-)
-.delete(
-  isloggedIn,
-  isOwner,
-  wrapAsync(listingController.destroylisting)
-);
-
-
-
-
-  
-
-// Edit Route
+// ===================== EDIT =====================
 router.get(
   "/:id/edit",
   isloggedIn,
   isOwner,
   wrapAsync(listingController.renderEditForm)
 );
-
-
 
 module.exports = router;
