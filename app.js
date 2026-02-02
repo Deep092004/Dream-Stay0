@@ -44,7 +44,6 @@ async function main() {
   await mongoose.connect(dbUrl);
 }
 
-
 // ================== APP CONFIG ==================
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -84,12 +83,21 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 });
-
+// ================== HOME ==================
+// app.get("/", (req, res) => {
+//   res.send("Working the route");
+// });
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
 // ================== ROUTES ==================
-app.use("/", userRouter);
+// app.use("/", userRouter);
+// app.use("/listings", lisingsRouter);
+// app.use("/listings/:id/reviews", reviewsRouter);
+// ================== ROUTES ==================
 app.use("/listings", lisingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
-
+app.use("/", userRouter);
 // ================== DEMO USER ==================
 app.get("/demouser", async (req, res) => {
   let fakeuser = new User({
@@ -99,15 +107,6 @@ app.get("/demouser", async (req, res) => {
   let newUser = await User.register(fakeuser, "helloworld");
   res.send(newUser);
 });
-
-// ================== HOME ==================
-// app.get("/", (req, res) => {
-//   res.send("Working the route");
-// });
-app.get("/", (req, res) => {
-  res.redirect("/listings");
-});
-
 
 // ================== 404 HANDLER ==================
 // app.all("/*", (req, res, next) => {
