@@ -132,24 +132,44 @@ module.exports.showListing = async (req, res, next) => {
 };
 
 // 4️⃣ CREATE LISTING
+// module.exports.createlisting = async (req, res, next) => {
+//   try {
+//     let url = req.file.path;
+//     let filename = req.file.filename;
+
+//     const newlisting = new Listing(req.body.listing);
+//     newlisting.owner = req.user._id;
+//     newlisting.image = { url, filename };
+
+//     await newlisting.save();
+
+//     req.flash("success", "Listing created successfully");
+//     return res.redirect("/listings");
+//   } catch (err) {
+//     return next(err);
+//   }
+// };
+// new code chatgpt wala
 module.exports.createlisting = async (req, res, next) => {
   try {
-    let url = req.file.path;
-    let filename = req.file.filename;
-
     const newlisting = new Listing(req.body.listing);
     newlisting.owner = req.user._id;
-    newlisting.image = { url, filename };
+
+    // ✅ image optional rakhi
+    if (req.file) {
+      newlisting.image = {
+        url: req.file.path,
+        filename: req.file.filename,
+      };
+    }
 
     await newlisting.save();
-
     req.flash("success", "Listing created successfully");
     return res.redirect("/listings");
   } catch (err) {
     return next(err);
   }
 };
-
 // 5️⃣ EDIT FORM
 module.exports.renderEditForm = async (req, res, next) => {
   try {
