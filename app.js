@@ -101,9 +101,13 @@ app.get("/demouser", async (req, res) => {
 });
 
 // ================== HOME ==================
+// app.get("/", (req, res) => {
+//   res.send("Working the route");
+// });
 app.get("/", (req, res) => {
-  res.send("Working the route");
+  res.redirect("/listings");
 });
+
 
 // ================== 404 HANDLER ==================
 // app.all("/*", (req, res, next) => {
