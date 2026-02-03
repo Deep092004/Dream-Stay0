@@ -152,10 +152,16 @@ module.exports.showListing = async (req, res, next) => {
 // new code chatgpt wala
 module.exports.createlisting = async (req, res, next) => {
   try {
+    // 🔥 DEBUG LOGS (YAHI ADD KARNA HAI)
+    console.log("========== CREATE LISTING DEBUG ==========");
+    console.log("REQ.BODY 👉", req.body);
+    console.log("REQ.FILE 👉", req.file);
+    console.log("REQ.USER 👉", req.user);
+    console.log("==========================================");
+
     const newlisting = new Listing(req.body.listing);
     newlisting.owner = req.user._id;
 
-    // ✅ image optional rakhi
     if (req.file) {
       newlisting.image = {
         url: req.file.path,
@@ -167,9 +173,11 @@ module.exports.createlisting = async (req, res, next) => {
     req.flash("success", "Listing created successfully");
     return res.redirect("/listings");
   } catch (err) {
+    console.log("❌ CREATE LISTING ERROR 👉", err);
     return next(err);
   }
 };
+
 // 5️⃣ EDIT FORM
 module.exports.renderEditForm = async (req, res, next) => {
   try {
