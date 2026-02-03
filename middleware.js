@@ -32,16 +32,19 @@ module.exports.isOwner=async(req,res,next)=>{
 }
 
 
-
 module.exports.validateListing = (req, res, next) => {
+  console.log("VALIDATE LISTING BODY 👉", req.body);
+
   let { error } = listingSchema.validate(req.body);
+
   if (error) {
+    console.log("❌ JOI ERROR 👉", error.details);
     let errMsg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(400, errMsg);
-  } else {
-    next();
+    return next(new ExpressError(400, errMsg));
   }
+  next();
 };
+
 
   
 module.exports. validateReview = (req, res, next) => {
