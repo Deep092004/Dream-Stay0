@@ -25,13 +25,12 @@ router
 router.get("/new", isloggedIn, listingController.renderNewForm);
 
 // ===================== SHOW + UPDATE + DELETE =====================
-router
-  .route("/:id")
+router.route("/:id")
   .get(wrapAsync(listingController.showListing))
   .put(
     isloggedIn,
     isOwner,
-    upload.single("image"),        // ✅ FIXED
+    upload.single("listing[image]"),        // ✅ FIXED
     validateListing,
     wrapAsync(listingController.updateListing)
   )
