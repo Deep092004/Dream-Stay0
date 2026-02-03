@@ -18,7 +18,6 @@ router
   .post(
     isloggedIn,
     upload.single("image"),        // ✅ FIXED (matches form)
-    validateListing,
     wrapAsync(listingController.createlisting)
   );
 
